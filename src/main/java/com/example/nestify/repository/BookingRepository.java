@@ -15,11 +15,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
         SELECT b
         FROM Booking b
-        WHERE b.tableId = :tableId
-          AND b.reservationDate = :date
+        WHERE b.table = :tableId
+          AND b.date = :date
           AND (
-              (b.reservationTime BETWEEN :startTime AND :endTime) OR
-              (:time BETWEEN b.reservationTime AND b.reservationTime + :duration)
+              (b.time BETWEEN :startTime AND :endTime) OR
+              (:time BETWEEN b.time AND b.time + :duration)
           )
     """)
     List<Booking> findConflictingBookings(
