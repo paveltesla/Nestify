@@ -34,12 +34,11 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+        <AuthContext.Provider value={{isAuthenticated, user, login, logout}}>
             {children}
         </AuthContext.Provider>
     );
 };
-
 // Хук для использования контекста аутентификации
 export const useAuth = () => {
     return useContext(AuthContext);

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../style/Style.css';
 
 const BookingForm = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [zones, setZones] = useState([]);
     const [tables, setTables] = useState([]);
     const [selectedZone, setSelectedZone] = useState('');
@@ -14,11 +17,10 @@ const BookingForm = () => {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        // Получаем список зон при загрузке компонента
         fetch('http://localhost:8080/api/zones')
             .then((response) => response.json())
             .then((data) => {
-                console.log("Fetched zones:", data); // Проверка данных
+                console.log("Fetched zones:", data);
                 setZones(data);
             })
             .catch((error) => console.error('Error fetching zones:', error));
@@ -26,11 +28,10 @@ const BookingForm = () => {
 
     const handleZoneChange = (e) => {
         setSelectedZone(e.target.value);
-        // Получаем список столов для выбранной зоны
         fetch(`http://localhost:8080/api/tables?zoneId=${e.target.value}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log("Fetched tables:", data); // Проверка данных
+                console.log("Fetched tables:", data);
                 setTables(data);
             })
             .catch((error) => console.error('Error fetching tables:', error));
@@ -41,7 +42,6 @@ const BookingForm = () => {
         setError('');
         setSuccess('');
 
-        // Создаем объект бронирования
         const bookingData = {
             userId: user.id,
             tableId: selectedTable,
@@ -70,11 +70,14 @@ const BookingForm = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate('/home'); // Перенаправление на домашнюю страницу
+    };
+
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div className="booking-form">
             <h1>Book a Table</h1>
             <form onSubmit={handleSubmit}>
-                {/* Выбор зоны */}
                 <select value={selectedZone} onChange={handleZoneChange} required>
                     <option value="">Select Zone</option>
                     {zones.length > 0 ? (
@@ -87,22 +90,18 @@ const BookingForm = () => {
                         <option disabled>No zones available</option>
                     )}
                 </select>
-
-                {/* Выбор стола */}
                 <select value={selectedTable} onChange={(e) => setSelectedTable(e.target.value)} required>
                     <option value="">Select Table</option>
                     {tables.length > 0 ? (
                         tables.map((table) => (
                             <option key={table.id} value={table.id}>
-                                {table.name} - Capacity: {table.capacity} people
+                                Table {table.tableNumber} - Capacity: {table.capacity} people
                             </option>
                         ))
                     ) : (
                         <option disabled>No tables available</option>
                     )}
                 </select>
-
-                {/* Количество людей */}
                 <input
                     type="number"
                     placeholder="Number of people"
@@ -110,29 +109,23 @@ const BookingForm = () => {
                     onChange={(e) => setPeopleCount(e.target.value)}
                     required
                 />
-
-                {/* Дата */}
                 <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     required
                 />
-
-                {/* Время */}
                 <input
                     type="time"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     required
                 />
-
-                {/* Кнопка отправки */}
                 <button type="submit">Book Table</button>
             </form>
-
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>{success}</p>}
+            <button onClick={handleBack} className="back-button">Back to Home</button>
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../style/Style.css'; // Импортируем CSS файл
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -9,11 +10,9 @@ const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    // Обработчик логина
     const handleLogin = async (e) => {
         e.preventDefault();
         setError(''); // Сбрасываем сообщение об ошибке
-
         try {
             const response = await fetch('http://localhost:8080/api/login', {  // Отправляем запрос на сервер
                 method: 'POST',
@@ -22,7 +21,6 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),  // Передаем email и пароль
             });
-
             if (response.ok) {
                 const userData = await response.json();  // Получаем данные пользователя с сервера
                 login(userData);  // Сохраняем данные пользователя в контексте
@@ -35,8 +33,12 @@ const Login = () => {
         }
     };
 
+    const handleRegister = () =>{
+        navigate('/register')
+    }
+
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div className="login-page">
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
                 <input
@@ -44,7 +46,7 @@ const Login = () => {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    style={{ margin: '10px', padding: '10px' }}
+                    className="input-field"
                     required
                 />
                 <input
@@ -52,12 +54,13 @@ const Login = () => {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    style={{ margin: '10px', padding: '10px' }}
+                    className="input-field"
                     required
                 />
-                <button type="submit" style={{ padding: '10px 20px' }}>Login</button>
+                <button type="submit" className="login-button">Login</button>
             </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Сообщение об ошибке */}
+            {error && <p className="error">{error}</p>}  {/* Сообщение об ошибке */}
+            <button onClick={handleRegister} className={"register-button"}>Register</button>
         </div>
     );
 };

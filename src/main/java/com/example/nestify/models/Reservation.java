@@ -2,7 +2,6 @@ package com.example.nestify.models;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
 
