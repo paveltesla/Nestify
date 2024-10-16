@@ -58,9 +58,9 @@ const Login = () => {
                     required
                 />
                 <button type="submit" className="login-button">Login</button>
+                <button onClick={handleRegister} className={"register-button"}>Register</button>
             </form>
-            {error && <p className="error">{error}</p>}  {/* Сообщение об ошибке */}
-            <button onClick={handleRegister} className={"register-button"}>Register</button>
+            {error && <p className="error">{error}</p>} {/* Сообщение об ошибке */}
         </div>
     );
 };
