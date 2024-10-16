@@ -17,18 +17,17 @@ public class BookingService {
     }
 
     public String createBooking(Long userID, Long tableID, int party_size, LocalDate date, LocalTime time) {
-        Tables tables = tableRepository.findById(tableID).orElseThrow(() -> new IllegalArgumentException("Table Not Found"));
+        Tables table = tableRepository.findById(tableID).orElseThrow(() -> new IllegalArgumentException("Table Not Found"));
         LocalTime startTime = time.minusHours(2);
         LocalTime endTime = time.plusHours(2);
-        Duration duration = Duration.ofHours(2); // Добавляем продолжительность
-        List<Booking> conflictingBookings = bookingRepository.findConflictingBookings(tableID, date, time, startTime, endTime, duration);
-        if(!conflictingBookings.isEmpty()){
+        List<Booking> conflictingBookings = bookingRepository.findConflictingBookings(tableID, date, startTime, endTime);
+        if (!conflictingBookings.isEmpty()) {
             throw new IllegalArgumentException("Table is already booked, please select another table!");
         } else {
             Booking booking = new Booking();
             booking.setUser(new Users(userID));
             booking.setPartySize(party_size);
-            booking.setTable(tables);
+            booking.setTable(table);
             booking.setDate(date);
             booking.setTime(time);
             bookingRepository.save(booking);

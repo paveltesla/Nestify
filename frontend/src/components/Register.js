@@ -1,86 +1,74 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import '../style/Style.css'; // Импортируем CSS файл
 
-function Register() {
-    // Локальные состояния для полей регистрации
+const Register = () => {
+    const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth(); // Используем login для автоматического входа после регистрации
 
-    // Функция, которая обрабатывает отправку формы
-    const handleSubmit = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
-
+        setError(''); // Сбрасываем сообщение об ошибке
         try {
-            // Отправка POST-запроса для регистрации пользователя
-            const response = await axios.post('http://localhost:8080/api/register', {
-                username,
-                password,
-                email
+            const response = await fetch('http://localhost:8080/api/register', { // Отправляем запрос на сервер
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, username, password }), // Передаем email, имя пользователя и пароль
             });
-
-            if (response.status === 200) {  // Успешная регистрация
-                setSuccessMessage('User is registered successfully!');
-                setUsername('');   // Очистка полей после регистрации
-                setPassword('');
-                setEmail('');
-                setErrorMessage('');
-                navigate('/login');  // Перенаправляем на страницу логина после успешной регистрации
-            } else {  // В случае ошибки от сервера
-                setErrorMessage('Registration failed. Please try again.');
+            if (response.ok) {
+                const userData = await response.json(); // Получаем данные пользователя с сервера
+                console.log("User Data:", userData); // Логируем данные пользователя для проверки
+                login(userData); // Сохраняем данные пользователя в контексте
+                navigate('/home'); // Перенаправляем на домашнюю страницу
+            } else {
+                const errorData = await response.json();
+                setError(errorData.message || 'Error during registration');
             }
-        } catch (error) {  // Обработка исключений (например, нет соединения с сервером)
-            console.error('Error during registration:', error);
-            setErrorMessage('Error during registration. Please try again.');
-            setSuccessMessage('');
+        } catch (err) {
+            setError('Error connecting to the server'); // Обработка ошибки соединения
         }
     };
 
     return (
-        <div className="register-container" style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'inline-block', textAlign: 'left' }}>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        style={{ display: 'block', width: '100%', padding: '10px', marginTop: '5px' }}
-                    />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        style={{ display: 'block', width: '100%', padding: '10px', marginTop: '5px' }}
-                    />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={{ display: 'block', width: '100%', padding: '10px', marginTop: '5px' }}
-                    />
-                </div>
-                {/* Вывод сообщений об ошибке или успехе */}
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-                <button type="submit" style={{ padding: '10px 20px', marginTop: '10px' }}>Sign Up</button>
+        <div className="register-page">
+            <h1>Register</h1>
+            <form onSubmit={handleRegister}>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="input-field"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="input-field"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input-field"
+                    required
+                />
+                <button type="submit" className="register-button">Register</button>
             </form>
+            {error && <p className="error">{error}</p>} {/* Сообщение об ошибке */}
         </div>
     );
-}
+};
 
 export default Register;

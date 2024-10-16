@@ -13,20 +13,20 @@ public class Booking {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "table_id", nullable = false)
+    @JoinColumn(name = "table_id")
     private Tables table;
 
-    @Column(name = "party_size", nullable = false)
+    @Column(name = "party_size")
     private int partySize;
 
-    @Column(name = "reservation_time", nullable = false)
+    @Column(name = "reservation_time")
     private LocalTime time;
 
-    @Column(name ="reservation_date", nullable = false)
+    @Column(name ="reservation_date")
     private LocalDate date;
 
     public LocalDate getDate() {

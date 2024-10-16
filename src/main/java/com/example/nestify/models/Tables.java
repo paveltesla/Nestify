@@ -9,7 +9,7 @@ public class Tables {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String tableNumber;
+    private Integer tableNumber;
     private Integer capacity;
 
     @ManyToOne
@@ -25,11 +25,11 @@ public class Tables {
         this.id = id;
     }
 
-    public String getTableNumber() {
+    public Integer getTableNumber() {
         return tableNumber;
     }
 
-    public void setTableNumber(String tableNumber) {
+    public void setTableNumber(Integer tableNumber) {
         this.tableNumber = tableNumber;
     }
 

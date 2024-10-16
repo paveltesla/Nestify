@@ -1,0 +1,124 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Стили для заголовков */
+h1, h3 {
+    color: #000;
+}
+
+/* Стили для формы */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для полей ввода и выпадающего списка */
+input, select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Стили для кнопок */
+button {
+    width: calc(100% - 20px);
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+/* Стили для сообщений об ошибках и успехе */
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
+.success {
+    color: green;
+    margin-top: 10px;
+}
+
+/* Специфические стили для HomePage */
+.home-page {
+    max-width: 800px;
+    text-align: center;
+}
+
+.profile-info {
+    margin-top: 20px;
+}
+
+/* Специфические стили для кнопок на HomePage */
+.logout-button, .booking-button {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 20px 10px;
+    padding: 10px 20px;
+}
+
+.logout-button:hover, .booking-button:hover {
+    background-color: #555;
+}
+
+/* Специфические стили для LoginPage */
+.login-page {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Специфические стили для кнопок на LoginPage */
+.login-button, .register-button {
+    width: calc(100% - 20px);
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    padding: 10px 20px;
+}
+
+.login-button:hover, .register-button:hover {
+    background-color: #555;
+}
