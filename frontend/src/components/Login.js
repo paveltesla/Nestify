@@ -23,13 +23,15 @@ const Login = () => {
             });
             if (response.ok) {
                 const userData = await response.json();  // Получаем данные пользователя с сервера
-                login(userData);  // Сохраняем данные пользователя в контексте
-                navigate('/home');  // Перенаправляем на главную страницу
+                login(userData);
+                localStorage.setItem('authToken', userData.token)
+                navigate('/home');
+
             } else {
-                setError('Invalid email or password');  // В случае неправильных данных
+                setError('Invalid email or password');
             }
         } catch (err) {
-            setError('Error connecting to the server');  // Обработка ошибки соединения
+            setError('Error connecting to the server');
         }
     };
 
