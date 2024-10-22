@@ -49,6 +49,11 @@ public class Controller {
         }
     }
 
+    @GetMapping("/user")
+    public List<Booking> getUserBookings(@RequestParam Long userId) {
+        return bookingService.getUserBooks(userId);
+    }
+
 
   @PostMapping("/bookings")
     public ResponseEntity<?> addBooking(@RequestBody BookingRequest request) {
@@ -59,12 +64,13 @@ public class Controller {
                     request.getPeopleCount(),
                     request.getDate(),
                     request.getTime()
-
             );
             return ResponseEntity.ok(message);
         } catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+
+
     }
     @GetMapping("/zones")
     public ResponseEntity<List<ZoneDTO>> getAllZones() {

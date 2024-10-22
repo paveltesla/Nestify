@@ -34,4 +34,12 @@ public class BookingService {
             return "Booking created!";
         }
     }
+
+    public List<Booking> getAllBooks() {
+        return bookingRepository.findAll();
+    }
+
+    public List<Booking> getUserBooks(Long userId) {
+        return bookingRepository.getUserBooks(userId);
+    }
 }

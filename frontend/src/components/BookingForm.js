@@ -75,58 +75,60 @@ const BookingForm = () => {
     };
 
     return (
-        <div className="booking-form">
-            <h1>Book a Table</h1>
-            <form onSubmit={handleSubmit}>
-                <select value={selectedZone} onChange={handleZoneChange} required>
-                    <option value="">Select Zone</option>
-                    {zones.length > 0 ? (
-                        zones.map((zone) => (
-                            <option key={zone.id} value={zone.id}>
-                                {zone.name}
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>No zones available</option>
-                    )}
-                </select>
-                <select value={selectedTable} onChange={(e) => setSelectedTable(e.target.value)} required>
-                    <option value="">Select Table</option>
-                    {tables.length > 0 ? (
-                        tables.map((table) => (
-                            <option key={table.id} value={table.id}>
-                                Table {table.tableNumber} - Capacity: {table.capacity} people
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>No tables available</option>
-                    )}
-                </select>
-                <input
-                    type="number"
-                    placeholder="Number of people"
-                    value={peopleCount}
-                    onChange={(e) => setPeopleCount(e.target.value)}
-                    required
-                />
-                <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    required
-                />
-                <input
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    required
-                />
-                <button type="submit">Book Table</button>
-                <button onClick={handleBack} className="back-button">Back to Home</button>
-            </form>
-            {error && <p className="error">{error}</p>}
-            {success && <p className="success">{success}</p>}
-        </div>
+            <div className="booking">
+            <div className="booking-form">
+                <h1>Book a Table</h1>
+                <form onSubmit={handleSubmit}>
+                    <select value={selectedZone} onChange={handleZoneChange} required>
+                        <option value="">Select Zone</option>
+                        {zones.length > 0 ? (
+                            zones.map((zone) => (
+                                <option key={zone.id} value={zone.id}>
+                                    {zone.name}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>No zones available</option>
+                        )}
+                    </select>
+                    <select value={selectedTable} onChange={(e) => setSelectedTable(e.target.value)} required>
+                        <option value="">Select Table</option>
+                        {tables.length > 0 ? (
+                            tables.map((table) => (
+                                <option key={table.id} value={table.id}>
+                                    Table {table.tableNumber} - Capacity: {table.capacity} people
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>No tables available</option>
+                        )}
+                    </select>
+                    <input
+                        type="number"
+                        placeholder="Number of people"
+                        value={peopleCount}
+                        onChange={(e) => setPeopleCount(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        required
+                    />
+                    <input
+                        type="time"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        required
+                    />
+                    <button type="submit">Book Table</button>
+                    <button onClick={handleBack} className="back-button">Back to Home</button>
+                </form>
+                {error && <p className="error">{error}</p>}
+                {success && <p className="success">{success}</p>}
+            </div>
+            </div>
     );
 };
 

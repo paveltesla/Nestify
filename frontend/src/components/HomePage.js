@@ -12,7 +12,7 @@ const HomePage = () => {
         // Асинхронная функция для получения данных о бронированиях
         const fetchBookings = async () => {
             try {
-                const response = await fetch(`/api/bookings?userId=${user?.id}`);
+                const response = await fetch(`/api/user?userId=${user?.id}`);
                 if (response.ok) {
                     const data = await response.json();
                     setBookings(data);
@@ -44,37 +44,41 @@ const HomePage = () => {
     };
 
     return (
-        <div className="home-page">
-            <h1>Welcome {user?.username}</h1>
-            <p>You are now logged in!</p>
-            <div className="profile-info">
-                <h3>Profile Information:</h3>
-                <p>Email: {user?.email}</p>
-            </div>
-            <button onClick={handleLogout} className="logout-button">
-                Logout
-            </button>
-            <button onClick={handleBooking} className="booking-button">
-                Go to Booking
-            </button>
-
-            {/* Секция для отображения забронированных столиков */}
-            <div className="bookings-info">
-                <h3>Your Bookings:</h3>
-                {bookings.length > 0 ? (
-                    <ul>
-                        {bookings.map((booking) => (
-                            <li key={booking.id}>
-                                <p>Table: {booking.table.name}</p>
-                                <p>Date: {booking.date}</p>
-                                <p>Time: {booking.time}</p>
-                                <p>Party Size: {booking.partySize}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No bookings found.</p>
+        <div className="home">
+            <div className="home-page">
+                <h1>Welcome {user?.username}</h1>
+                <p>You are now logged in!</p>
+                <div className="profile-info">
+                    <h3>Profile Information:</h3>
+                    <p>Email: {user?.email}</p>
+                </div>
+                {isAdmin?(
+                    <div className="admin_infor">
                 )}
+                {/* Секция для отображения забронированных столиков */}
+                <div className="bookings-info">
+                    <h3>Your Bookings:</h3>
+                    {bookings.length > 0 ? (
+                        <ul>
+                            {bookings.map((booking) => (
+                                <li key={booking.id}>
+                                    <p>Table: {booking.table.id}</p>
+                                    <p>Date: {booking.date}</p>
+                                    <p>Time: {booking.time}</p>
+                                    <p>Party Size: {booking.partySize}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No bookings found.</p>
+                    )}
+                </div>
+                <button onClick={handleLogout} className="logout-button">
+                    Logout
+                </button>
+                <button onClick={handleBooking} className="booking-button">
+                    Go to Booking
+                </button>
             </div>
         </div>
     );

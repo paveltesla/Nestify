@@ -3,20 +3,21 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    margin: 100px;
 }
 
 /* Стили для заголовков */
 h1, h3 {
     color: #000;
 }
-
+.home{
+    display: flex;
+    justify-content: center;
+}
+.booking{
+    display: flex;
+    justify-content: center;
+}
 /* Стили для формы */
 form {
     display: flex;
@@ -53,6 +54,11 @@ button {
     font-size: 16px;
 }
 
+.booking-form{
+    flex-direction: column;
+    align-items: center;
+}
+
 button:hover {
     background-color: #555;
 }
@@ -66,16 +72,6 @@ button:hover {
 .success {
     color: green;
     margin-top: 10px;
-}
-
-/* Специфические стили для HomePage */
-.home-page {
-    max-width: 800px;
-    text-align: center;
-}
-
-.profile-info {
-    margin-top: 20px;
 }
 
 /* Специфические стили для кнопок на HomePage */
@@ -120,4 +116,93 @@ button:hover {
 
 .login-button:hover, .register-button:hover {
     background-color: #555;
+}
+
+.home-page {
+    margin-right:  auto;
+    margin-left: auto;
+    padding: 50px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.home-page h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #343a40;
+}
+
+.home-page p {
+    font-size: 1.1em;
+    color: #6c757d;
+}
+
+.profile-info {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.profile-info h3 {
+    margin-top: 0;
+    color: #495057;
+}
+
+.profile-info p {
+    margin: 5px 0;
+    color: #6c757d;
+}
+
+.logout-button,
+.booking-button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #ffffff;
+    background-color: #000000;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover,
+.booking-button:hover {
+    background-color: #000000;
+}
+
+.bookings-info {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.bookings-info h3 {
+    margin-top: 0;
+    color: #495057;
+}
+
+.bookings-info ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.bookings-info li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f1f3f5;
+    border-radius: 5px;
+}
+
+.bookings-info li p {
+    margin: 5px 0;
+    color: #6c757d;
 }

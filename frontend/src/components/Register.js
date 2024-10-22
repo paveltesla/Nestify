@@ -16,17 +16,22 @@ const Register = () => {
         setError(''); // Сбрасываем сообщение об ошибке
         try {
             const response = await fetch('http://localhost:8080/api/register', { // Отправляем запрос на сервер
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, username, password }), // Передаем email, имя пользователя и пароль
             });
             if (response.ok) {
-                const userData = await response.json(); // Получаем данные пользователя с сервера
-                console.log("User Data:", userData); // Логируем данные пользователя для проверки
-                login(userData); // Сохраняем данные пользователя в контексте
-                navigate('/home'); // Перенаправляем на домашнюю страницу
+                const userData = await response.json();
+                console.log("User Data:", userData);
+                if(userData.is && userData){
+                    login(userData);
+                    navigate('/home');
+                }else {
+                    setError('err data server get')
+                }
+
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || 'Error during registration');
@@ -34,7 +39,7 @@ const Register = () => {
         } catch (err) {
             setError('Error connecting to the server'); // Обработка ошибки соединения
         }
-    };
+    }
 
     return (
         <div className="register-page">

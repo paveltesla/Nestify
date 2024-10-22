@@ -7,9 +7,13 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    @Query("""
+    SELECT b FROM Booking b WHERE b.user.id = :userId
+""")
+    List<Booking> getUserBooks(@Param("userId")Long userId);
 
     @Query("""
     SELECT b
@@ -22,6 +26,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
           (:endTime BETWEEN b.time AND b.time)
       )
 """)
+
     List<Booking> findConflictingBookings(
             @Param("tableId") Long tableId,
             @Param("date") LocalDate date,

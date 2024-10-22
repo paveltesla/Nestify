@@ -33,8 +33,10 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');  // Очищаем localStorage при выходе
     };
 
+    const isAdmin = user?.roles?.some(role => role.roleName === 'ADMIN')
+
     return (
-        <AuthContext.Provider value={{isAuthenticated, user, login, logout}}>
+        <AuthContext.Provider value={{isAuthenticated, user, login, logout, isAdmin}}>
             {children}
         </AuthContext.Provider>
     );
