@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import '../style/Style.css'; // Импортируем CSS файл
+import '../style/Style.css';
+import {useAuth} from "../context/AuthContext"; // Импортируем CSS файл
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -9,42 +9,41 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth(); // Используем login для автоматического входа после регистрации
+    const {login} = useAuth();
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setError(''); // Сбрасываем сообщение об ошибке
+        setError('');
         try {
-            const response = await fetch('http://localhost:8080/api/register', { // Отправляем запрос на сервер
-                method: 'GET',
+            const response = await fetch('http://localhost:8080/api/users/register', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, username, password }), // Передаем email, имя пользователя и пароль
+                body: JSON.stringify({ email, username, password }),
             });
-            if (response.ok) {
-                const userData = await response.json();
-                console.log("User Data:", userData);
-                if(userData.is && userData){
-                    login(userData);
-                    navigate('/home');
-                }else {
-                    setError('err data server get')
-                }
 
+            console.log(response);
+
+            if (response.ok) {
+                const responseData = await response.json(); // Обработка как JSON
+                console.log("Response Data:", responseData);
+                login(responseData);
+                navigate('/home');
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || 'Error during registration');
             }
         } catch (err) {
-            setError('Error connecting to the server'); // Обработка ошибки соединения
+            console.error(err);
+            setError('Error connecting to the server');
         }
     }
 
     return (
         <div className="register-page">
-            <h1>Register</h1>
             <form onSubmit={handleRegister}>
+                <h1>Register</h1>
                 <input
                     type="email"
                     placeholder="Email"
@@ -70,8 +69,8 @@ const Register = () => {
                     required
                 />
                 <button type="submit" className="register-button">Register</button>
+                {error && <p className="error">{error}</p>} {/* Сообщение об ошибке */}
             </form>
-            {error && <p className="error">{error}</p>} {/* Сообщение об ошибке */}
         </div>
     );
 };

@@ -14,7 +14,8 @@ const Login = () => {
         e.preventDefault();
         setError(''); // Сбрасываем сообщение об ошибке
         try {
-            const response = await fetch('http://localhost:8080/api/login', {  // Отправляем запрос на сервер
+            console.log(password, email)
+            const response = await fetch('http://localhost:8080/api/users/login', {  // Отправляем запрос на сервер
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

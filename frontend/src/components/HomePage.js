@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../style/Style.css'; // Импортируем CSS файл
+import '../style/Style.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { logout, user } = useAuth();
+    const { logout, user, isAdmin } = useAuth();
     const [bookings, setBookings] = useState([]);
 
     useEffect(() => {
-        // Асинхронная функция для получения данных о бронированиях
         const fetchBookings = async () => {
             try {
-                const response = await fetch(`/api/user?userId=${user?.id}`);
+                const url = isAdmin ? '/api/bookings' : `/api/bookings/user?userId=${user?.id}`;
+                const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
                     setBookings(data);
@@ -25,16 +25,13 @@ const HomePage = () => {
         };
 
         if (user) {
-            // Вызов асинхронной функции и обработка промиса
             fetchBookings().catch((error) => {
                 console.error('Error occurred while fetching bookings:', error);
             });
         }
-    }, [user]);
+    }, [user, isAdmin]);
 
     const handleLogout = () => {
-        console.log('User logged out');
-        localStorage.clear();
         logout();
         navigate('/');
     };
@@ -43,43 +40,75 @@ const HomePage = () => {
         navigate('/booking');
     };
 
+    const handleDeleteBooking = async (bookingId) => {
+        try {
+            const response = await fetch(`/api/bookings/${bookingId}`, { method: 'DELETE' });
+            if (response.ok) {
+                setBookings((prevBookings) => prevBookings.filter((b) => b.id !== bookingId));
+            } else {
+                console.error('Failed to delete booking');
+            }
+        } catch (error) {
+            console.error('Error deleting booking:', error);
+        }
+    };
+
     return (
-        <div className="home">
-            <div className="home-page">
-                <h1>Welcome {user?.username}</h1>
-                <p>You are now logged in!</p>
-                <div className="profile-info">
-                    <h3>Profile Information:</h3>
-                    <p>Email: {user?.email}</p>
-                </div>
-                {isAdmin?(
-                    <div className="admin_infor">
-                )}
-                {/* Секция для отображения забронированных столиков */}
-                <div className="bookings-info">
-                    <h3>Your Bookings:</h3>
-                    {bookings.length > 0 ? (
-                        <ul>
-                            {bookings.map((booking) => (
-                                <li key={booking.id}>
-                                    <p>Table: {booking.table.id}</p>
-                                    <p>Date: {booking.date}</p>
-                                    <p>Time: {booking.time}</p>
-                                    <p>Party Size: {booking.partySize}</p>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No bookings found.</p>
-                    )}
-                </div>
-                <button onClick={handleLogout} className="logout-button">
-                    Logout
-                </button>
-                <button onClick={handleBooking} className="booking-button">
-                    Go to Booking
-                </button>
+        <div className="home-page">
+            <h1>Welcome {user?.username}</h1>
+            <p>You are now logged in!</p>
+            <div className="profile-info">
+                <h3>Profile Information:</h3>
+                <p>Email: {user?.email}</p>
             </div>
+            {isAdmin ? (
+                <div className="admin-info">
+                    <h3>Admin Dashboard</h3>
+                    <p>You have administrative access.</p>
+                    <div className="bookings-info">
+                        <h3>All Bookings:</h3>
+                        {bookings.length > 0 ? (
+                            <ul>
+                                {bookings.map((booking) => (
+                                    <li key={booking.id}>
+                                        <p>Table: {booking.table.id}</p>
+                                        <p>Date: {booking.date}</p>
+                                        <p>Time: {booking.time}</p>
+                                        <p>Party Size: {booking.partySize}</p>
+                                        <button onClick={() => handleDeleteBooking(booking.id)}>Delete</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No bookings found.</p>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <div className="user-info">
+                    <h3>User Dashboard</h3>
+                    <p>Standard user access.</p>
+                    <div className="bookings-info">
+                        <h3>Your Bookings:</h3>
+                        {bookings.length > 0 ? (
+                            <ul>
+                                {bookings.map((booking) => (
+                                    <li key={booking.id}>
+                                        <p>Table: {booking.table.id}</p>
+                                        <p>Date: {booking.date}</p>
+                                        <p>Time: {booking.time}</p>
+                                        <p>Party Size: {booking.partySize}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No bookings found.</p>
+                        )}
+                    </div>
+                </div>
+            )}
+            <button onClick={handleLogout} className="logout-button">Logout</button>
+            <button onClick={handleBooking} className="booking-button">Go to Booking</button>
         </div>
     );
 };

@@ -17,7 +17,7 @@ const BookingForm = () => {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/zones')
+        fetch('http://localhost:8080/api/zones/')
             .then((response) => response.json())
             .then((data) => {
                 console.log("Fetched zones:", data);
@@ -28,7 +28,7 @@ const BookingForm = () => {
 
     const handleZoneChange = (e) => {
         setSelectedZone(e.target.value);
-        fetch(`http://localhost:8080/api/tables?zoneId=${e.target.value}`)
+        fetch(`http://localhost:8080/api/tables/?zoneId=${e.target.value}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log("Fetched tables:", data);
@@ -51,7 +51,7 @@ const BookingForm = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/bookings', {
+            const response = await fetch('http://localhost:8080/api/bookings/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
