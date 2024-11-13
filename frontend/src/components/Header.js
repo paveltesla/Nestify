@@ -1,42 +1,63 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import '../style/Style.css'; // Здесь будут стили для Header
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Если используете AuthContext
 
 const Header = () => {
-    const { logout, user } = useAuth();
+    const location = useLocation();
     const navigate = useNavigate();
+    const { logout } = useAuth(); // Используем состояние авторизации
 
+    // Функции для навигации
     const handleLogout = () => {
-        console.log('User logged out');
         logout();
-        navigate('/'); // Перенаправление на страницу авторизации
+        navigate('/');
+    };
+
+    const handleBooking = () => {
+        navigate('/booking');
+    };
+
+    // Логика отображения кнопок
+    const renderButtons = () => {
+        if (location.pathname === '/') {
+            return null; // На странице логина кнопок нет
+        }
+
+        if (location.pathname === '/home') {
+            return (
+                <>
+                    <button onClick={handleBooking}>Book a Table</button>
+                    <button onClick={handleLogout}>LogOut</button>
+                </>
+            );
+        }
+
+        if (location.pathname === '/booking') {
+            return (
+                <>
+                    <button onClick={() => navigate('/home')}>Back to Home</button>
+                    <button onClick={handleLogout}>LogOut</button>
+                </>
+            );
+        }
+        if (location.pathname === '/register') {
+            return (
+                <>
+                    <button onClick={() => navigate('/')}>LogIn</button> {/* Кнопка для перехода на страницу логина */}
+                </>
+            );
+        }
+        return null; // Для других маршрутов
     };
 
     return (
         <header className="header">
             <div className="logo">
-                <h1>MyApp</h1> {/* Логотип или название приложения */}
+                <h1>My App</h1>
             </div>
-            <div className="nav-links">
-                {user ? (
-                    <>
-                        <button onClick={handleLogout} className="logout-button">
-                            Logout
-                        </button>
-                        {/* Здесь можно добавить другие кнопки или ссылки */}
-                    </>
-                ) : (
-                    <>
-                        <button onClick={() => navigate('/')}>
-                            Login
-                        </button>
-                        <button onClick={() => navigate('/register')} >
-                            Register
-                        </button>
-                    </>
-                )}
-            </div>
+            <nav className="nav-links">
+                {renderButtons()}
+            </nav>
         </header>
     );
 };
