@@ -5,18 +5,28 @@ import BookingPage from './components/BookingForm';
 import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectRoute';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import { AuthProvider } from './context/AuthContext';
 
+
 const App = () => {
+
     return (
         <AuthProvider>
             <Router>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-                    <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
-                </Routes>
+                <div className="wrapper">
+                    <Header/>
+                    <main>
+                        <Routes>
+                            <Route path="/" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+                            <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
+                        </Routes>
+                    </main>
+                    <Footer/>
+                </div>
             </Router>
         </AuthProvider>
     );

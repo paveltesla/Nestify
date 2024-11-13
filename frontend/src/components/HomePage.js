@@ -5,7 +5,7 @@ import '../style/Style.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const { logout, user, isAdmin } = useAuth();
+    const {user, isAdmin } = useAuth();
     const [bookings, setBookings] = useState([]);
 
     useEffect(() => {
@@ -30,11 +30,6 @@ const HomePage = () => {
             });
         }
     }, [user, isAdmin]);
-
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
 
     const handleBooking = () => {
         navigate('/booking');
@@ -107,7 +102,6 @@ const HomePage = () => {
                     </div>
                 </div>
             )}
-            <button onClick={handleLogout} className="logout-button">Logout</button>
             <button onClick={handleBooking} className="booking-button">Go to Booking</button>
         </div>
     );

@@ -75,10 +75,9 @@ const BookingForm = () => {
     };
 
     return (
-            <div className="booking">
             <div className="booking-form">
-                <h1>Book a Table</h1>
                 <form onSubmit={handleSubmit}>
+                    <h1>Book a Table</h1>
                     <select value={selectedZone} onChange={handleZoneChange} required>
                         <option value="">Select Zone</option>
                         {zones.length > 0 ? (
@@ -127,7 +126,6 @@ const BookingForm = () => {
                 </form>
                 {error && <p className="error">{error}</p>}
                 {success && <p className="success">{success}</p>}
-            </div>
             </div>
     );
 };
