@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,14 +22,19 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Users newUser) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody Users newUser) {
         Optional<Users> existingUser = userRepository.findByUsername(newUser.getUsername());
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Username already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }
         userRepository.save(newUser);
-        return ResponseEntity.ok("User registered successfully");
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("message", "User registered successfully");
+        return ResponseEntity.ok(successResponse);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {

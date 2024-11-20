@@ -38,7 +38,7 @@ const Register = () => {
             console.error(err);
             setError('Error connecting to the server');
         }
-    }
+    };
 
     return (
         <div className="register-page">
