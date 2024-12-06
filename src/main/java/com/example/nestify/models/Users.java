@@ -26,23 +26,14 @@ public class Users {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+
     private Set<Role> roles = new HashSet<>();
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
     public Users() {}
-
     // Конструктор с ID
     public Users(Long id) {
         this.id = id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -55,18 +46,23 @@ public class Users {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setCreatedAt(LocalTime createdAt) {
         this.createdAt = createdAt;
     }
+
     public LocalTime getCreatedAt() {
         return createdAt;
     }
@@ -77,5 +73,13 @@ public class Users {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
