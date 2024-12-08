@@ -5,29 +5,35 @@ import '../style/Style.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const {user, isAdmin } = useAuth();
+    const { user, isAdmin } = useAuth();
     const [bookings, setBookings] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchBookings = async () => {
+            setLoading(true);
             try {
-                const url = isAdmin ? '/api/bookings' : `/api/bookings/user?userId=${user?.id}`;
+                const url = isAdmin
+                    ? '/api/bookings' // Админ видит все брони
+                    : `/api/bookings/user?userId=${user?.id}`; // Пользователь видит только свои брони
+
                 const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
                     setBookings(data);
                 } else {
-                    console.error('Failed to fetch bookings');
+                    setError('Failed to fetch bookings');
                 }
             } catch (error) {
-                console.error('Error fetching bookings:', error);
+                setError('Error fetching bookings');
+            } finally {
+                setLoading(false);
             }
         };
 
         if (user) {
-            fetchBookings().catch((error) => {
-                console.error('Error occurred while fetching bookings:', error);
-            });
+            fetchBookings();
         }
     }, [user, isAdmin]);
 
@@ -40,11 +46,12 @@ const HomePage = () => {
             const response = await fetch(`/api/bookings/${bookingId}`, { method: 'DELETE' });
             if (response.ok) {
                 setBookings((prevBookings) => prevBookings.filter((b) => b.id !== bookingId));
+                alert('Booking deleted successfully!');
             } else {
-                console.error('Failed to delete booking');
+                setError('Failed to delete booking');
             }
         } catch (error) {
-            console.error('Error deleting booking:', error);
+            setError('Error deleting booking');
         }
     };
 
@@ -56,10 +63,14 @@ const HomePage = () => {
                 <h3>Profile Information:</h3>
                 <p>Email: {user?.email}</p>
             </div>
-            {isAdmin ? (
+
+            {loading ? (
+                <p>Loading bookings...</p>
+            ) : error ? (
+                <p className="error">{error}</p>
+            ) : isAdmin ? (
                 <div className="admin-info">
                     <h3>Admin Dashboard</h3>
-                    <p>You have administrative access.</p>
                     <div className="bookings-info">
                         <h3>All Bookings:</h3>
                         {bookings.length > 0 ? (
@@ -82,7 +93,6 @@ const HomePage = () => {
             ) : (
                 <div className="user-info">
                     <h3>User Dashboard</h3>
-                    <p>Standard user access.</p>
                     <div className="bookings-info">
                         <h3>Your Bookings:</h3>
                         {bookings.length > 0 ? (
@@ -97,7 +107,7 @@ const HomePage = () => {
                                 ))}
                             </ul>
                         ) : (
-                            <p>No bookings found.</p>
+                            <p>You have no bookings yet.</p>
                         )}
                     </div>
                 </div>

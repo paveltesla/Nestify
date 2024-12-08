@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Определяем структуру данных для контекста
+// Определяем контекст
 const AuthContext = createContext({
     isAuthenticated: false,
     user: null,
@@ -14,21 +14,20 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
-    // При монтировании проверяем localStorage на наличие сохраненных данных
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
             const userData = JSON.parse(storedUser);
             setIsAuthenticated(true);
             setUser(userData);
-            setIsAdmin(userData.role === 'ADMIN'); // Проверяем роль пользователя
+            setIsAdmin(userData.roles.includes('ADMIN')); // Проверяем, есть ли роль ADMIN
         }
     }, []);
 
     const login = (userData) => {
         setIsAuthenticated(true);
         setUser(userData);
-        setIsAdmin(userData.role === 'ADMIN'); // Проверяем роль пользователя
+        setIsAdmin(userData.roles.includes('ADMIN')); // Проверяем роли пользователя
         localStorage.setItem('user', JSON.stringify(userData));
     };
 
