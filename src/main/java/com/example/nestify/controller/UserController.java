@@ -1,63 +1,64 @@
 package com.example.nestify.controller;
 
-import com.example.nestify.models.LoginRequest;
-import com.example.nestify.models.Role;
-import com.example.nestify.models.Users;
+import com.example.nestify.models.*;
 import com.example.nestify.repository.UserRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import jakarta.validation.Valid;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
+@Validated // Используется для валидации входных данных
 public class UserController {
 
     private final UserRepository userRepository;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
+
     }
 
+
+    // Регистрация пользователя с валидацией
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody Users newUser) {
-        Optional<Users> existingUser = userRepository.findByUsername(newUser.getUsername());
-        if (existingUser.isPresent()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Username already exists");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody Users newUser) {
+        // Проверка на существующего пользователя
+        if (userRepository.findByUsername(newUser.getUsername()).isPresent()) {
+            return new ResponseEntity<>(Collections.singletonMap("message", "Username already exists"), HttpStatus.CONFLICT);
         }
+        // Хешируем пароль перед сохранением
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(newUser);
-        Map<String, String> successResponse = new HashMap<>();
-        successResponse.put("message", "User registered successfully");
-        return ResponseEntity.ok(successResponse);
+
+        return ResponseEntity.ok(Collections.singletonMap("message", "User registered successfully"));
     }
 
-
+    // Логин пользователя с обработкой исключений
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        Optional<Users> userOptional = userRepository.findByEmailAndPassword(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-        );
+        Users user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (userOptional.isEmpty()) {
+        // Проверяем пароль
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
-
-        Users user = userOptional.get();
-
-        // Получаем список ролей пользователя
+        // Получаем роли пользователя
         List<String> roles = user.getRoles().stream()
-                .map(Role::getRoleName) // Извлекаем названия ролей
+                .map(Role::getRoleName)
                 .collect(Collectors.toList());
 
-        // Формируем ответ с информацией о пользователе и его ролях
+        // Создаём ответ с информацией о пользователе
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
         response.put("email", user.getEmail());
@@ -66,6 +67,4 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
-
 }

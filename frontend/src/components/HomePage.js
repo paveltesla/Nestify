@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../style/Style.css';
+import BookingCard from '../components/BookingCard';
+import styles from '../style/HomePage.module.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -10,109 +11,86 @@ const HomePage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            setLoading(true);
-            try {
-                const url = isAdmin
-                    ? '/api/bookings' // Админ видит все брони
-                    : `/api/bookings/user?userId=${user?.id}`; // Пользователь видит только свои брони
+    // Меморизируем fetchBookings
+    const fetchBookings = useCallback(async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const response = await fetch(
+                isAdmin
+                    ? '/api/bookings'
+                    : `/api/bookings/user?userId=${user?.id}`
+            );
 
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    setBookings(data);
-                } else {
-                    setError('Failed to fetch bookings');
-                }
-            } catch (error) {
-                setError('Error fetching bookings');
-            } finally {
-                setLoading(false);
+            if (response.ok) {
+                const data = await response.json();
+                setBookings(data);
+            } else {
+                setError('Failed to fetch bookings');
             }
-        };
-
-        if (user) {
-            fetchBookings();
+        } catch {
+            setError('Error connecting to the server');
+        } finally {
+            setLoading(false);
         }
-    }, [user, isAdmin]);
+    }, [user, isAdmin]); // Зависимости
 
-    const handleBooking = () => {
-        navigate('/booking');
-    };
+    useEffect(() => {
+        if (user) fetchBookings();
+    }, [user, fetchBookings]);
 
     const handleDeleteBooking = async (bookingId) => {
         try {
             const response = await fetch(`/api/bookings/${bookingId}`, { method: 'DELETE' });
             if (response.ok) {
-                setBookings((prevBookings) => prevBookings.filter((b) => b.id !== bookingId));
-                alert('Booking deleted successfully!');
+                setBookings((prev) => prev.filter((b) => b.id !== bookingId));
+                alert('Booking deleted successfully');
             } else {
-                setError('Failed to delete booking');
+                alert('Failed to delete booking');
             }
-        } catch (error) {
-            setError('Error deleting booking');
+        } catch {
+            alert('Error deleting booking');
         }
     };
 
+    const handleBooking = () => {
+        navigate('/booking');
+    };
+
     return (
-        <div className="home-page">
-            <h1>Welcome {user?.username}</h1>
-            <p>You are now logged in!</p>
-            <div className="profile-info">
-                <h3>Profile Information:</h3>
-                <p>Email: {user?.email}</p>
+        <div className={styles.homePage}>
+            <h1>Welcome, {user?.username}</h1>
+            <div className={styles.profileInfo}>
+                <h3>Your Profile</h3>
+                <p><strong>Email:</strong> {user?.email}</p>
             </div>
 
-            {loading ? (
-                <p>Loading bookings...</p>
-            ) : error ? (
-                <p className="error">{error}</p>
-            ) : isAdmin ? (
-                <div className="admin-info">
-                    <h3>Admin Dashboard</h3>
-                    <div className="bookings-info">
-                        <h3>All Bookings:</h3>
-                        {bookings.length > 0 ? (
-                            <ul>
-                                {bookings.map((booking) => (
-                                    <li key={booking.id}>
-                                        <p>Table: {booking.table.id}</p>
-                                        <p>Date: {booking.date}</p>
-                                        <p>Time: {booking.time}</p>
-                                        <p>Party Size: {booking.partySize}</p>
-                                        <button onClick={() => handleDeleteBooking(booking.id)}>Delete</button>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No bookings found.</p>
-                        )}
-                    </div>
-                </div>
-            ) : (
-                <div className="user-info">
-                    <h3>User Dashboard</h3>
-                    <div className="bookings-info">
-                        <h3>Your Bookings:</h3>
-                        {bookings.length > 0 ? (
-                            <ul>
-                                {bookings.map((booking) => (
-                                    <li key={booking.id}>
-                                        <p>Table: {booking.table.id}</p>
-                                        <p>Date: {booking.date}</p>
-                                        <p>Time: {booking.time}</p>
-                                        <p>Party Size: {booking.partySize}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>You have no bookings yet.</p>
-                        )}
-                    </div>
+            {loading && <p>Loading bookings...</p>}
+            {error && <p className={styles.errorMessage}>{error}</p>}
+
+            {!loading && !error && (
+                <div>
+                    <h3>{isAdmin ? 'All Bookings' : 'Your Bookings'}</h3>
+                    {bookings.length > 0 ? (
+                        <ul className={styles.bookingList}>
+                            {bookings.map((booking) => (
+                                <BookingCard
+                                    key={booking.id}
+                                    booking={booking}
+                                    onDelete={handleDeleteBooking}
+                                    isAdmin={isAdmin}
+                                />
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No bookings found</p>
+                    )}
                 </div>
             )}
-            <button onClick={handleBooking} className="booking-button">Go to Booking</button>
+
+            <button onClick={handleBooking} className={styles.bookingButton}>
+                Make a Booking
+            </button>
         </div>
     );
 };

@@ -1,62 +1,64 @@
 package com.example.nestify.services;
 
+import com.example.nestify.exeption.RoleNotFoundException;
+import com.example.nestify.exeption.UserNotFoundException;
+import com.example.nestify.models.Role;
 import com.example.nestify.models.Users;
+import com.example.nestify.repository.RoleRepository;
 import com.example.nestify.repository.UserRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServices {
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserServices(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    public UserServices(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
-    public Optional<Users> findByUsernameAndPassword(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
+    public Users register(Users user) {
+        // Хешируем пароль
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        // Сохраняем пользователя в базе данных
+        return userRepository.save(user);
     }
 
-    public Optional<Users> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    // Обновление ролей пользователя
+    public void updateUserRoles(Long userId, List<String> roleNames) throws UserNotFoundException,  RoleNotFoundException {
+        // Проверка существования пользователя
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+
+        // Формирование новых ролей
+        Set<Role> newRoles = new HashSet<>();
+        for (String roleName : roleNames) {
+            Role role = roleRepository.findByRoleName(roleName)
+                    .orElseThrow(() -> new RoleNotFoundException("Role not found: " + roleName));
+            newRoles.add(role);
+        }
+
+        // Обновление ролей пользователя
+        user.setRoles(newRoles);
+        userRepository.save(user);
     }
 
-    public Optional<Users> findByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
-    }
-
-    public Optional<Users> findByEmail(String email) {
-        return Optional.empty();
-    }
-
-
-    public List<Users> findAll() {
-        return userRepository.findAll();
-    }
-
-    public Optional<Users> save(Users user) {
-        return Optional.of(userRepository.save(user));
-    }
-
-    public <S extends Users> List<S> findAll(Example<S> example, Sort sort) {
-        return List.of();
-    }
-
-
-    public void flush() {
-        userRepository.flush();
-    }
-
-
-    public <S extends Users> S saveAndFlush(S entity) {
-        return userRepository.saveAndFlush(entity);
-    }
-
-    public void deleteAllInBatch() {
-        userRepository.deleteAllInBatch();
+    // Удаление пользователя
+    public void deleteUser(Long userId) throws UserNotFoundException {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+        userRepository.delete(user);
     }
 }
