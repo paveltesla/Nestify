@@ -22,8 +22,13 @@ const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),  // Передаем email и пароль
             });
+            const userData = await response.json();
             if (response.ok) {
-                const userData = await response.json();  // Получаем данные пользователя с сервера
+                if(userData.role === 'ADMIN') {
+                    login(userData);
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    navigate('/adminPanel');
+                }
                 login(userData);
                 localStorage.setItem('authToken', userData.token)
                 navigate('/home');

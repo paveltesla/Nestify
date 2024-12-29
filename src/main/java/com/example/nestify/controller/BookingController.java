@@ -5,17 +5,22 @@ import com.example.nestify.services.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.nestify.services.UserServices;
+import com.example.nestify.repository.BookingRepository;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
 
-    public BookingController(BookingService bookingService) {
+    public BookingController(BookingService bookingService, BookingRepository bookingRepository) {
         this.bookingService = bookingService;
+        this.bookingRepository = bookingRepository;
     }
 
     @GetMapping("/user")
@@ -37,5 +42,14 @@ public class BookingController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBooking(@PathVariable Long id) {
+        if (!bookingRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found");
+        }
+        bookingRepository.deleteById(id);
+        return ResponseEntity.ok("Booking deleted successfully");
     }
 }

@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectRoute';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { AuthProvider } from './context/AuthContext';
+import AdminPanel from "./components/AdminPanel";
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
                     <Header/>
                     <main>
                         <Routes>
+                            <Route path="/adminPanel" component={AdminPanel} />
                             <Route path="/" element={<Login />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

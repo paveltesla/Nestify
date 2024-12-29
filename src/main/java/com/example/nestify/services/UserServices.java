@@ -1,20 +1,27 @@
 package com.example.nestify.services;
 
 import com.example.nestify.models.Users;
+import com.example.nestify.repository.BookingRepository;
 import com.example.nestify.repository.UserRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class UserServices {
+
+
+    private final BookingRepository bookingRepository;
+
     private final UserRepository userRepository;
 
-    public UserServices(UserRepository userRepository) {
+    public UserServices(UserRepository userRepository, BookingRepository bookingRepository) {
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public Optional<Users> findByUsernameAndPassword(String username, String password) {
@@ -59,4 +66,13 @@ public class UserServices {
     public void deleteAllInBatch() {
         userRepository.deleteAllInBatch();
     }
+
+        public void deleteBooking(Long bookingId) {
+            // Проверяем существование резерва
+            if (!bookingRepository.existsById(bookingId)) {
+                throw new NoSuchElementException("Booking not found with ID: " + bookingId);
+            }
+            // Удаляем резерв
+            bookingRepository.deleteById(bookingId);
+        }
 }

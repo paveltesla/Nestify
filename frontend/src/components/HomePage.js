@@ -36,15 +36,19 @@ const HomePage = () => {
     };
 
     const handleDeleteBooking = async (bookingId) => {
+        console.log(`Deleting booking with ID: ${bookingId}`);
         try {
             const response = await fetch(`/api/bookings/${bookingId}`, { method: 'DELETE' });
             if (response.ok) {
+                console.log(`Booking with ID ${bookingId} deleted successfully.`);
                 setBookings((prevBookings) => prevBookings.filter((b) => b.id !== bookingId));
+            } else if (response.status === 404) {
+                console.error(`Booking with ID ${bookingId} not found (404).`);
             } else {
-                console.error('Failed to delete booking');
+                console.error(`Failed to delete booking. Status: ${response.status}`);
             }
         } catch (error) {
-            console.error('Error deleting booking:', error);
+            console.error("Error deleting booking:", error);
         }
     };
 
@@ -70,7 +74,6 @@ const HomePage = () => {
                                         <p>Date: {booking.date}</p>
                                         <p>Time: {booking.time}</p>
                                         <p>Party Size: {booking.partySize}</p>
-                                        <button onClick={() => handleDeleteBooking(booking.id)}>Delete</button>
                                     </li>
                                 ))}
                             </ul>
@@ -93,6 +96,7 @@ const HomePage = () => {
                                         <p>Date: {booking.date}</p>
                                         <p>Time: {booking.time}</p>
                                         <p>Party Size: {booking.partySize}</p>
+                                        <button onClick={() => handleDeleteBooking(booking.id)}>Delete</button>
                                     </li>
                                 ))}
                             </ul>
