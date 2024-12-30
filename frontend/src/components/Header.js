@@ -27,7 +27,7 @@ const Header = () => {
             return (
                 <>
                     <button onClick={handleBooking}>Book a Table</button>
-                    <button onClick={handleLogout}>LogOut</button>
+                    <button onClick={handleLogout}>Log out</button>
                 </>
             );
         }
@@ -36,14 +36,14 @@ const Header = () => {
             return (
                 <>
                     <button onClick={() => navigate('/home')}>Back to Home</button>
-                    <button onClick={handleLogout}>LogOut</button>
+                    <button onClick={handleLogout}>Log out</button>
                 </>
             );
         }
         if (location.pathname === '/register') {
             return (
                 <>
-                    <button onClick={() => navigate('/')}>LogIn</button> {/* Кнопка для перехода на страницу логина */}
+                    <button onClick={() => navigate('/')}>Log in</button> {/* Кнопка для перехода на страницу логина */}
                 </>
             );
         }
@@ -53,7 +53,7 @@ const Header = () => {
     return (
         <header className="header">
             <div className="logo">
-                <h1>My App</h1>
+                <h1>Nestyfy</h1>
             </div>
             <nav className="nav-links">
                 {renderButtons()}
