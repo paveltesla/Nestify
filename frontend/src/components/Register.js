@@ -26,10 +26,10 @@ const Register = () => {
             console.log(response);
 
             if (response.ok) {
-                const responseData = await response.json(); // Обработка как JSON
-                console.log("Response Data:", responseData);
-                login(responseData);
-                navigate('/home');
+                const userData = await response.json(); // Обработка как JSON
+                console.log("Response Data:", userData);
+                login(userData);
+                navigate('/');
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || 'Error during registration');

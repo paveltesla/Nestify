@@ -43,7 +43,7 @@ const Header = () => {
         if (location.pathname === '/register') {
             return (
                 <>
-                    <button onClick={() => navigate('/')}>Log in</button> {/* Кнопка для перехода на страницу логина */}
+                    <button onClick={() => navigate('/')} >Log in</button> {/* Кнопка для перехода на страницу логина */}
                 </>
             );
         }

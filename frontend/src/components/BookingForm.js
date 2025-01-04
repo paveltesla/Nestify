@@ -123,9 +123,9 @@ const BookingForm = () => {
                     />
                     <button type="submit">Book Table</button>
                     <button onClick={handleBack} className="back-button">Back to Home</button>
+                    {error && <p className="error">{error}</p>}
+                    {success && <p className="success">{success}</p>}
                 </form>
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success">{success}</p>}
             </div>
         );
 };

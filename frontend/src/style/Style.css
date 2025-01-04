@@ -109,7 +109,7 @@ input, select {
 
 /* Стили для кнопок */
 button {
-    width: calc(100% - 20px);
+
     padding: 10px 20px;
     margin-top: 10px;
     background-color: #000;

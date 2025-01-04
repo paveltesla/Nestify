@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
+
     // При монтировании проверяем localStorage на наличие сохраненных данных
     useEffect(() => {
         const storedUser = localStorage.getItem('user');

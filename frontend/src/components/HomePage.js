@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../style/Style.css';
 
 const HomePage = () => {
-    const navigate = useNavigate();
     const {user, isAdmin } = useAuth();
     const [bookings, setBookings] = useState([]);
 
@@ -30,10 +28,6 @@ const HomePage = () => {
             });
         }
     }, [user, isAdmin]);
-
-    const handleBooking = () => {
-        navigate('/booking');
-    };
 
     const handleDeleteBooking = async (bookingId) => {
         console.log(`Deleting booking with ID: ${bookingId}`);
@@ -106,7 +100,6 @@ const HomePage = () => {
                     </div>
                 </div>
             )}
-            <button onClick={handleBooking} className="booking-button">Go to Booking</button>
         </div>
     );
 };

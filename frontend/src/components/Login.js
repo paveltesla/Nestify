@@ -24,11 +24,6 @@ const Login = () => {
             });
             const userData = await response.json();
             if (response.ok) {
-                if(userData.role === 'ADMIN') {
-                    login(userData);
-                    localStorage.setItem('user', JSON.stringify(userData));
-                    navigate('/adminPanel');
-                }
                 login(userData);
                 localStorage.setItem('authToken', userData.token)
                 navigate('/home');
@@ -67,8 +62,8 @@ const Login = () => {
                 />
                 <button type="submit" className="login-button">Login</button>
                 <button onClick={handleRegister} className={"register-button"}>Register</button>
+                {error && <p className="error">{error}</p>} {/* Сообщение об ошибке */}
             </form>
-            {error && <p className="error">{error}</p>} {/* Сообщение об ошибке */}
         </div>
     );
 };
